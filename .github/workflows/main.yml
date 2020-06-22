@@ -2,6 +2,11 @@ on:
   push:
     branches: [ master ]
 
+docker_settings: &docker_settings
+  username: ${{ secrets.DOCKER_USERNAME }}
+  password: ${{ secrets.DOCKER_PASSWORD }}
+  tag_with_sha: true
+
 jobs:
   docker_build:
     runs-on: ubuntu-latest
@@ -10,8 +15,6 @@ jobs:
     - name: transmission
       uses: docker/build-push-action@v1.1.0
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        <<: *docker_settings
         repository: ap4y/transmission
-        tag_with_sha: true
         dockerfile: Dockerfile.transmission
