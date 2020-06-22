@@ -6,6 +6,7 @@ jobs:
   docker_build:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: transmission
       uses: docker/build-push-action@v1.1.0
       with:
@@ -13,5 +14,4 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ap4y/transmission
         tag_with_sha: true
-        path: /
         dockerfile: Dockerfile.transmission
