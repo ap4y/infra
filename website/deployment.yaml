@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: website
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 850
+        runAsGroup: 850
+      containers:
+      - name: website
+        image: ap4y/website
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: caddy-data
+          mountPath: /data
+        - name: caddy-config
+          mountPath: /etc/caddy
+        securityContext:
+          readOnlyRootFilesystem: true
+        resources:
+          limits:
+            cpu: 200m
+            memory: 500Mi
+        livenessProbe:
+          httpGet:
+            path: /about
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /about
+            port: 8000
+      volumes:
+      - name: caddy-data
+        emptyDir: {}
+      - name: caddy-config
+        configMap:
+          name: website-config

@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# A server-side hook script to deploy k8s resources from the repository on push.
+# Called by "git receive-pack" with arguments: refname sha1-old sha1-new
+#
+# To enable this hook, copy this file to ".git/hooks/update".
+#
+# Config
+# ------
+# hooks.kubectl-update.deploybranch
+#   Name of a branch to deploy from. Defaults to master.
+# hooks.kubectl-update.kubectlpath
+#   Path to the kubectl binary. Defaults to /snap/bin/microk8s.kubectl.
+# hooks.kubectl-update.worktreepath
+#   Path to the work tree directory. Defaults to /storage/git/deploy.
+#
+
+#!/bin/bash
+# --- Config
+deploybranch=$(git config --bool hooks.kubectl-update.deploybranch)
+branch=${deploybranch:-master}
+kubectlpath=$(git config --bool hooks.kube.kubectlpath)
+kubectl=${kubectlpath:-/snap/bin/microk8s.kubectl}
+worktreepath=$(git config --bool hooks.kube.worktreepath)
+worktree=${worktreepath:-/storage/git/deploy}
+
+pad_output() {
+  echo "$1" | while read -r line; do
+    echo "       $line"
+  done
+}
+
+set -e
+
+while read -r oldrev newrev ref
+do
+  if [ "$ref" != "refs/heads/$branch" ]; then
+    exit 0
+  fi
+
+  git --work-tree="$worktree" checkout -f "$branch"
+  cd "$worktree"
+  echo "-----> Applying..."
+  output=$($kubectl apply -k .)
+  pad_output "$output"
+done
+
+echo "-----> New Status"
+output=$($kubectl get deployment,pod,service,ingress --all-namespaces)
+pad_output "$output"

@@ -1,0 +1,11 @@
+bases:
+- ../../dovecot
+namespace: email
+images:
+- name: ap4y/dovecot
+  newTag: 2.3.10.1-r0
+configMapGenerator:
+- name: dovecot-config
+  files:
+  - users
+  - dovecot.conf

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leaf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: leaf
+  template:
+    metadata:
+      labels:
+        app: leaf
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 850
+        runAsGroup: 850
+      containers:
+      - name: leaf
+        image: registry.gitlab.com/ap4y/leaf/master
+        command: ["/leaf-server", "-decks", "/decks"]
+        workingDir: /database
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: database
+          mountPath: /database
+        - name: decks
+          mountPath: /decks
+          readOnly: true
+        securityContext:
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi

@@ -1,0 +1,10 @@
+bases:
+- ../../website
+namespace: website
+images:
+- name: ap4y/website
+  newTag: sha-3fda62f
+configMapGenerator:
+- name: website-config
+  files:
+  - Caddyfile

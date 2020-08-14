@@ -1,0 +1,12 @@
+FROM alpine:3.11
+
+ARG DOVECOT_VER=2.3.10.1-r0
+
+RUN apk add --no-cache "dovecot=${DOVECOT_VER}" "dovecot-lmtpd=${DOVECOT_VER}"; \
+  addgroup -g 1001 vmail; \
+  adduser -u 1001 -s /sbin/nologin -G vmail -D vmail
+
+EXPOSE 993
+EXPOSE 2525
+
+ENTRYPOINT ["dovecot", "-F"]

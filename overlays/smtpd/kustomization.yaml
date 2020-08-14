@@ -1,0 +1,22 @@
+bases:
+- ../../smtpd
+namespace: email
+images:
+- name: ap4y/opensmtpd
+  newTag: 6.6.4p1-r0
+- name: ap4y/dkimproxy
+  newTag: 1.4.1-r5
+configMapGenerator:
+- name: smtpd-config
+  files:
+  - creds
+  - domains
+  - users
+  - smtpd.conf
+- name: dkimproxy-config
+  files:
+  - dkimproxy_out.conf
+secretGenerator:
+- name: ap4y-me-dkim
+  files:
+  - default.private

@@ -1,0 +1,13 @@
+bases:
+- ./overlays/chat
+- ./overlays/cloud
+- ./overlays/dovecot
+- ./overlays/leaf-ap4y
+- ./overlays/leaf-j0li
+- ./overlays/smtpd
+- ./overlays/transmission
+- ./overlays/website
+resources:
+- issuer.yaml
+- ingress.yaml
+- psp.yaml

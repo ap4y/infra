@@ -1,0 +1,9 @@
+FROM alpine:3.11
+
+ARG DKIMPROXY_VER=1.4.1-r5
+
+RUN apk add --no-cache "dkimproxy=${DKIMPROXY_VER}"
+
+EXPOSE 10027
+
+ENTRYPOINT ["dkimproxy.out", "--conf_file", "/etc/dkimproxy/dkimproxy_out.conf"]

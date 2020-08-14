@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-web
+  template:
+    metadata:
+      labels:
+        app: chat-web
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 850
+        runAsGroup: 850
+      containers:
+      - name: chat-web
+        image: caddy
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: caddy-data
+          mountPath: /data
+        - name: caddy-config
+          mountPath: /etc/caddy
+        - name: website-data
+          mountPath: /usr/share/caddy
+          readOnly: true
+        securityContext:
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      volumes:
+      - name: caddy-data
+        emptyDir: {}
+      - name: website-data
+        hostPath:
+          path: /storage/kubernetes/converse
+          type: Directory
+      - name: caddy-config
+        configMap:
+          name: caddy-config

@@ -1,0 +1,10 @@
+bases:
+- ../../transmission
+namespace: transmission
+images:
+- name: ap4y/transmission
+  newTag: sha-a90d6bd
+configMapGenerator:
+- name: transmission-config
+  files:
+  - settings.json

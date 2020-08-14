@@ -1,0 +1,8 @@
+:8000
+root * /usr/share/caddy
+file_server
+@static {
+  file
+  path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff
+}
+header @static Cache-Control max-age=5184000

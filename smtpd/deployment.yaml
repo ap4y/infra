@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smtpd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smtpd
+  template:
+    metadata:
+      labels:
+        app: smtpd
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: smtpd
+        image: ap4y/opensmtpd
+        ports:
+        - containerPort: 25
+        - containerPort: 587
+        volumeMounts:
+        - name: config
+          mountPath: /etc/smtpd
+          readOnly: true
+        - name: certs
+          mountPath: /etc/ssl/smtpd
+          readOnly: true
+        - name: queue
+          mountPath: /var/spool/smtpd
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+      - name: dkimproxy
+        image: ap4y/dkimproxy
+        volumeMounts:
+        - name: dkimproxy-config
+          mountPath: /etc/dkimproxy
+          readOnly: true
+        - name: domainkey
+          mountPath: /var/dkimproxy/cloud.ap4y.me
+          readOnly: true
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+        livenessProbe:
+          tcpSocket:
+            port: 25
+        readinessProbe:
+          tcpSocket:
+            port: 25
+      volumes:
+      - name: config
+        configMap:
+          name: smtpd-config
+      - name: certs
+        secret:
+          secretName: cloud-certificate
+          defaultMode: 0700
+      - name: dkimproxy-config
+        configMap:
+          name: dkimproxy-config
+      - name: domainkey
+        secret:
+          secretName: ap4y-me-dkim
+      - name: queue
+        hostPath:
+          path: /storage/kubernetes/vmail/spool

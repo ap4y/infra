@@ -1,0 +1,13 @@
+bases:
+- ../../leaf
+nameSuffix: -j0li
+namespace: leaf
+commonLabels:
+  db: j0li
+images:
+- name: registry.gitlab.com/ap4y/leaf/master
+  newTag: f32db495286d62b5ebe80769ab8432f1a05a7711
+resources:
+- ingress.yaml
+patchesStrategicMerge:
+- deployment.yaml

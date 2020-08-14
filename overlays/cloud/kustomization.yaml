@@ -1,0 +1,10 @@
+bases:
+- ../../cloud
+namespace: email
+images:
+- name: registry.gitlab.com/ap4y/cloud/docker-builds
+  newTag: latest
+secretGenerator:
+- name: cloud-config
+  files:
+  - cloud.json

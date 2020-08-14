@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leaf
+spec:
+  template:
+    metadata:
+      labels:
+        app: leaf
+        db: ap4y
+    spec:
+      volumes:
+      - name: database
+        hostPath:
+          path: /storage/kubernetes/leaf/ap4y
+          type: Directory
+      - name: decks
+        hostPath:
+          path: /storage/kubernetes/leaf/japanese
+          type: Directory

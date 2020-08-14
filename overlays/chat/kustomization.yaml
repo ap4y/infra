@@ -1,0 +1,15 @@
+bases:
+- ../../chat
+namespace: chat
+images:
+- name: prosody/prosody
+  newTag: 0.11.5
+- name: caddy
+  newTag: 2.1.1
+configMapGenerator:
+- name: chat-prosody-config
+  files:
+  - prosody.cfg.lua
+- name: caddy-config
+  files:
+  - Caddyfile

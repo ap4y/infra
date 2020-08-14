@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-prosody
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-prosody
+  template:
+    metadata:
+      labels:
+        app: chat-prosody
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 850
+        runAsGroup: 850
+      containers:
+      - name: chat-prosody
+        image: prosody/prosody
+        command: ["prosody"]
+        ports:
+        - containerPort: 5222
+        - containerPort: 5280
+        volumeMounts:
+        - name: config
+          mountPath: /etc/prosody
+          readOnly: true
+        - name: certs
+          mountPath: /etc/prosody/certs
+          readOnly: true
+        - name: modules
+          mountPath: /usr/lib/prosody-modules
+          readOnly: true
+        - name: data
+          mountPath: /var/lib/prosody
+        securityContext:
+          readOnlyRootFilesystem: true
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+        livenessProbe:
+          tcpSocket:
+            port: 5222
+        readinessProbe:
+          tcpSocket:
+            port: 5222
+      volumes:
+      - name: config
+        configMap:
+          name: chat-prosody-config
+      - name: certs
+        secret:
+          secretName: chat-certificate
+      - name: modules
+        hostPath:
+          path: /storage/kubernetes/prosody/modules
+      - name: data
+        hostPath:
+          path: /storage/kubernetes/xmpp

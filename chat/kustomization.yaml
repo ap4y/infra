@@ -1,0 +1,8 @@
+resources:
+- certificate.yaml
+- deployment.yaml
+- deployment-web.yaml
+- service-xmpp.yaml
+- service-bosh.yaml
+- service-web.yaml
+- ingress.yaml

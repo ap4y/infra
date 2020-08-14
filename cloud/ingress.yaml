@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cloud
+  annotations:
+    cert-manager.io/issuer: letsencrypt-issuer
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/frame-deny: "true"
+    ingress.kubernetes.io/content-type-nosniff: "true"
+    ingress.kubernetes.io/browser-xss-filter: "true"
+spec:
+  tls:
+  - hosts:
+    - cloud.ap4y.me
+    secretName: cloud-certificate
+  rules:
+  - host: cloud.ap4y.me
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: cloud
+          servicePort: 80

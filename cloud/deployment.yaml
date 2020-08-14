@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud
+  template:
+    metadata:
+      labels:
+        app: cloud
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 850
+        runAsGroup: 850
+      containers:
+      - name: cloud
+        image: registry.gitlab.com/ap4y/cloud/docker-builds
+        command: ["/cloud", "-config", "/config/cloud.json"]
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          readOnly: true
+        - name: shares
+          mountPath: /shares
+        - name: cache
+          mountPath: /cache
+        - name: gallery
+          mountPath: /gallery
+          readOnly: true
+        - name: files
+          mountPath: /files
+          readOnly: true
+        securityContext:
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+      volumes:
+      - name: config
+        secret:
+          secretName: cloud-config
+      - name: shares
+        hostPath:
+          path: /storage/kubernetes/cloud
+          type: Directory
+      - name: cache
+        emptyDir: {}
+      - name: gallery
+        hostPath:
+          path: /storage/kubernetes/export
+          type: Directory
+      - name: files
+        hostPath:
+          path: /storage/kubernetes/cloud
+          type: Directory
