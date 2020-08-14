@@ -1,0 +1,20 @@
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'tag version'
+        required: true
+
+jobs:
+  docker_build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: dkimproxy
+      uses: docker/build-push-action@v1.1.0
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ap4y/dkimproxy
+        tags: ${{ github.event.inputs.version }}
+        dockerfile: smtpd/Dockerfile.dkimproxy
