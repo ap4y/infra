@@ -1,0 +1,19 @@
+FROM alpine:3.12
+
+ARG VERSION=0.9.8-r1
+
+RUN apk add --no-cache "rtorrent=${VERSION}" && \
+    mkdir -p \
+      /config \
+      /session \
+      /socket \
+      /downloads && \
+    ln -sf /dev/stdout /var/log/rtorrent-info.log && \
+    ln -sf /dev/stderr /var/log/rtorrent-error.log
+
+VOLUME /config
+VOLUME /downloads
+
+EXPOSE 40413
+
+ENTRYPOINT ["rtorrent", "-n", "-o", "import=/config/rtorrent.rc"]
