@@ -1,9 +1,10 @@
-FROM alpine:3.11
+FROM docker.io/alpine:3.14
 
-ARG OPENSMTPD_VER=6.6.4p1-r0
+ARG OPENSMTPD_VER=6.8.0p2-r0
 
 RUN apk add --no-cache "opensmtpd=${OPENSMTPD_VER}"; \
-  adduser -D ap4y
+  adduser -D ap4y; \
+  adduser -D j0li
 
 VOLUME /var/spool/smtpd
 
