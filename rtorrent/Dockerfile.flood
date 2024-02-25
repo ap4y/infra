@@ -1,9 +1,9 @@
-FROM node:alpine
+FROM docker.io/node:alpine
 
-ARG VERSION=3.1.0
+ARG VERSION=4.6.1
 
 RUN npm i -g "flood@${VERSION}" --unsafe-perm
 
 EXPOSE 3000
 
-ENTRYPOINT ["flood", "--host=0.0.0.0"]
+ENTRYPOINT ["flood"]
