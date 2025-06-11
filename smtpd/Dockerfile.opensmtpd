@@ -1,6 +1,6 @@
-FROM docker.io/alpine:3.14
+FROM docker.io/alpine:3.22
 
-ARG OPENSMTPD_VER=6.8.0p2-r2
+ARG OPENSMTPD_VER=7.7.0p0-r0
 
 RUN apk add --no-cache "opensmtpd=${OPENSMTPD_VER}"; \
   adduser -D ap4y; \
