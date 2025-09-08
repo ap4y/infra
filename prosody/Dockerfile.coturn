@@ -1,0 +1,7 @@
+FROM docker.io/alpine:3.22
+
+ARG COTURN_VER=4.6.3-r1
+
+RUN apk add --no-cache "coturn=${COTURN_VER}";
+
+ENTRYPOINT ["turnserver", "-c", "/coturn/turnserver.conf"]

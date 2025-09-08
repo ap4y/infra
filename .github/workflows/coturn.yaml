@@ -1,0 +1,20 @@
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'tag version'
+        required: true
+
+jobs:
+  docker_build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: coturn
+      uses: docker/build-push-action@v1.1.0
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ap4y/coturn
+        tags: ${{ github.event.inputs.version }}
+        dockerfile: prosody/Dockerfile.coturn
