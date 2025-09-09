@@ -2,7 +2,9 @@ FROM docker.io/alpine:3.22
 
 ARG PROSODY_VER=0.12.5-r1
 
-RUN apk add --no-cache "prosody=${PROSODY_VER}";
+RUN apk add --no-cache "prosody=${PROSODY_VER}" luarocks; \
+    ln -s /usr/bin/luarocks-5.4 /usr/bin/luarocks; \
+    prosodyctl install --server=https://modules.prosody.im/rocks/ mod_cloud_notify
 
 EXPOSE 5222
 EXPOSE 5000
