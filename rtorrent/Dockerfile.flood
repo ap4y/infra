@@ -1,6 +1,6 @@
-FROM docker.io/node:14-alpine
+FROM docker.io/node:24-alpine
 
-ARG VERSION=4.6.1
+ARG VERSION=4.14.2
 
 RUN npm i -g "flood@${VERSION}" --unsafe-perm
 
